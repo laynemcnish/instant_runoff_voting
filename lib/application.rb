@@ -18,9 +18,7 @@ class IRV
 
   def count_votes
     get_first_column
-    @first_column.each do |element|
-      @vote_count[element] = @first_column.count(element)
-    end
+    @first_column.map { |element| @vote_count[element] = @first_column.count(element) }
     @vote_count
   end
 
@@ -31,7 +29,7 @@ class IRV
     @winning_candidate = @vote_array.last
   end
 
-  def check_majority
+  def check_for_majority_or_tie
     find_highest_vote
     if @winning_candidate[1].to_f/ballots.length > 0.5
       @winner = @winning_candidate[0]
@@ -51,11 +49,7 @@ class IRV
 
   def find_losers
     losers_array = []
-    @vote_array.each do |candidate|
-      if losers_array.length == 0 || losers_array.last[1] == candidate[1]
-        losers_array << candidate
-      end
-    end
+    @vote_array.each {|candidate| losers_array << candidate if losers_array.length == 0 || losers_array.last[1] == candidate[1]}
     losers_array
   end
 
@@ -67,15 +61,19 @@ class IRV
     end
   end
 
-  def final_tally
-    until @winner != nil || @tied_candidates != nil
-      check_majority
-    end
+  def return_winning_or_tied_candidates
     if @winner != nil
       @winner
     else
       @tied_candidates
     end
+  end
+
+  def final_tally
+    until @winner != nil || @tied_candidates != nil
+      check_for_majority_or_tie
+    end
+    return_winning_or_tied_candidates
   end
 
 
