@@ -14,4 +14,9 @@ describe IRV do
   it 'can find the winner' do
     expect(IRV.new(ballots).final_tally).to eq("I")
   end
+
+  it 'can return tied candidates' do
+    tied_ballots = [["R","I","D"], ["R","I","D"],["R","I","D"],["I","D","R"],["I","D","R"],["I","D","R"]]
+    expect(IRV.new(tied_ballots).final_tally).to eq([["I", 3], ["R", 3]])
+  end
 end
